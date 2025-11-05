@@ -1,0 +1,134 @@
+.search-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  animation: fadeIn 0.6s ease-in;
+}
+
+.search-form {
+  margin-bottom: 3rem;
+}
+
+.search-input-wrapper {
+  display: flex;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid #2a2a2a;
+  border-radius: 16px;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.search-input-wrapper:focus-within {
+  border-color: #00d4ff;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e0e0e0;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.search-input::placeholder {
+  color: #666;
+}
+
+.search-button {
+  background: linear-gradient(135deg, #00d4ff 0%, #00ffaa 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  color: #0a0a0a;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+}
+
+.search-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+}
+
+.search-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.search-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.search-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(10, 10, 10, 0.3);
+  border-top-color: #0a0a0a;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.search-loading {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.search-loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(0, 212, 255, 0.2);
+  border-top-color: #00d4ff;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  animation: spin 1s linear infinite;
+}
+
+.search-loading p {
+  font-size: 1.1rem;
+  color: #00d4ff;
+}
+
+.search-results {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.results-header {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #e0e0e0;
+  font-weight: 600;
+  text-align: center;
+}
+
+.search-placeholder {
+  text-align: center;
+  padding: 6rem 2rem;
+  animation: fadeIn 0.6s ease-in;
+}
+
+.placeholder-icon {
+  color: #2a2a2a;
+  margin-bottom: 2rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.search-placeholder h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.search-placeholder p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
