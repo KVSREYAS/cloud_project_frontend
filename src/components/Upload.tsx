@@ -6,6 +6,8 @@ const Upload = () => {
   const [isDragging, setIsDragging] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadedImage, setUploadedImage] = useState<Image | null>(null)
+  const [customLabels, setCustomLabels] = useState<string>('')
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleDragEnter = (e: DragEvent<HTMLDivElement>) => {
@@ -32,14 +34,14 @@ const Upload = () => {
 
     const files = e.dataTransfer.files
     if (files && files.length > 0) {
-      await handleFileUpload(files[0])
+      setSelectedFile(files[0])
     }
   }
 
   const handleFileSelect = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files && files.length > 0) {
-      await handleFileUpload(files[0])
+      setSelectedFile(files[0])
     }
   }
 
@@ -55,6 +57,19 @@ const Upload = () => {
     // Create FormData for file upload
     const formData = new FormData()
     formData.append('image', file)
+    
+    // Parse custom labels from comma-separated string
+    if (customLabels.trim()) {
+      const labelsArray = customLabels
+        .split(',')
+        .map(label => label.trim())
+        .filter(label => label.length > 0)
+      
+      if (labelsArray.length > 0) {
+        // Send as JSON string that backend can parse
+        formData.append('custom_labels', JSON.stringify(labelsArray))
+      }
+    }
 
     try {
       // Use proxy endpoint to bypass CORS
@@ -91,7 +106,7 @@ const Upload = () => {
         size: file.size,
       }
       setUploadedImage(mockImage)
-    } finally {
+      } finally {
       setIsUploading(false)
     }
   }
@@ -100,15 +115,21 @@ const Upload = () => {
     fileInputRef.current?.click()
   }
 
+  const handleUploadClick = async () => {
+    if (selectedFile) {
+      await handleFileUpload(selectedFile)
+    }
+  }
+
   return (
     <div className="upload-container">
       <div
-        className={`upload-area ${isDragging ? 'dragging' : ''} ${isUploading ? 'uploading' : ''}`}
+        className={`upload-area ${isDragging ? 'dragging' : ''} ${isUploading ? 'uploading' : ''} ${selectedFile ? 'file-selected' : ''}`}
         onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={handleClick}
+        onClick={!selectedFile ? handleClick : undefined}
       >
         <input
           ref={fileInputRef}
@@ -122,6 +143,40 @@ const Upload = () => {
           <div className="upload-loading">
             <div className="spinner"></div>
             <p>Uploading image...</p>
+          </div>
+        ) : selectedFile ? (
+          <div className="upload-content">
+            <div className="upload-icon">
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+            </div>
+            <h3>{selectedFile.name}</h3>
+            <p>{(selectedFile.size / 1024).toFixed(2)} KB</p>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setSelectedFile(null)
+                if (fileInputRef.current) {
+                  fileInputRef.current.value = ''
+                }
+              }}
+              className="change-file-button"
+            >
+              Change File
+            </button>
           </div>
         ) : (
           <div className="upload-content">
@@ -147,6 +202,32 @@ const Upload = () => {
           </div>
         )}
       </div>
+
+      {selectedFile && !isUploading && (
+        <div className="upload-form">
+          <div className="labels-input-group">
+            <label htmlFor="custom-labels" className="labels-label">
+              Custom Labels (comma-separated)
+            </label>
+            <input
+              id="custom-labels"
+              type="text"
+              value={customLabels}
+              onChange={(e) => setCustomLabels(e.target.value)}
+              placeholder="e.g., nature, landscape, sunset"
+              className="labels-input"
+            />
+            <p className="labels-hint">Enter labels separated by commas to help organize your images</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleUploadClick}
+            className="upload-button"
+          >
+            Upload Image
+          </button>
+        </div>
+      )}
 
       {uploadedImage && (
         <div className="upload-success">
