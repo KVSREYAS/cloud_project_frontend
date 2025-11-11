@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react'
 import './Search.css'
 import Gallery from './Gallery'
-import { Image, ImageListResponse } from '../types'
+import { Image, ImageListWithLabelsResponse } from '../types'
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -41,23 +41,24 @@ const Search = () => {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      const data: ImageListResponse = await response.json()
+      const data: ImageListWithLabelsResponse = await response.json()
       console.log('Parsed data:', data)
 
       if (data.images && Array.isArray(data.images)) {
-        // Convert array of URLs to Image objects
-        const imageObjects: Image[] = data.images.map((url, index) => {
+        // Convert response to Image objects with labels
+        const imageObjects: Image[] = data.images.map((item, index) => {
           // Extract filename from URL
-          const urlParts = url.split('/')
+          const urlParts = item.blob_url.split('/')
           const filename = urlParts[urlParts.length - 1]
           // Decode URL-encoded filename
           const decodedFilename = decodeURIComponent(filename)
           
           return {
             id: `${Date.now()}-${index}`,
-            url: url,
+            url: item.blob_url,
             filename: decodedFilename,
             uploadedAt: new Date().toISOString(),
+            labels: item.label || [],
           }
         })
         

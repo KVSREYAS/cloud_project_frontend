@@ -4,6 +4,7 @@ export interface Image {
   filename: string;
   uploadedAt: string;
   size?: number;
+  labels?: string[];
 }
 
 export interface UploadResponse {
@@ -20,5 +21,14 @@ export interface SearchResponse {
 
 export interface ImageListResponse {
   images: string[];
+}
+
+export interface ImageWithLabels {
+  blob_url: string;
+  label: string[];
+}
+
+export interface ImageListWithLabelsResponse {
+  images: ImageWithLabels[];
 }
 

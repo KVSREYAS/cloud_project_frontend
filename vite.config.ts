@@ -12,7 +12,7 @@ export default defineConfig({
     ],             // 👈 important so Railway can access it
     proxy: {
       '/api': {
-        target: 'https://myapp3-736053828578.asia-south2.run.app',
+        target: 'https://myapp4-736053828578.asia-southeast1.run.app',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
